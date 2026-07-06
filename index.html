@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pepfound - Peptide Knowledge Base</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      background: #000;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #000;
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00ff88, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Instrument Serif', serif;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #999;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #00ff88;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .hero {
+      padding: 8rem 0 4rem 0;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      font-family: 'Instrument Serif', serif;
+      letter-spacing: -1.5px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #999;
+      margin-bottom: 3rem;
+      font-weight: 400;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 6rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 1rem 2.2rem;
+      border-radius: 0;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: #00ff88;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #00dd77;
+      transform: scale(1.02);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #fff;
+      border: 1.5px solid #fff;
+    }
+
+    .btn-secondary:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+      margin: 6rem 0;
+      padding: 3rem 0;
+      border-top: 1px solid #222;
+      border-bottom: 1px solid #222;
+    }
+
+    .feature-card {
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card h3 {
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .feature-card p {
+      color: #999;
+      line-height: 1.8;
+    }
+
+    .filters {
+      background: #111;
+      padding: 2rem;
+      border-radius: 0;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      border: 1px solid #222;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 1rem;
+      border: 1px solid #333;
+      border-radius: 0;
+      font-size: 0.95rem;
+      font-family: 'Outfit', sans-serif;
+      background: #000;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .filters input::placeholder {
+      color: #666;
+    }
+
+    .filters input:focus,
+    .filters select:focus {
+      outline: none;
+      border-color: #00ff88;
+      box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+    }
+
+    .filters input {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .card {
+      background: #111;
+      border-radius: 0;
+      padding: 2rem;
+      border: 1px solid #222;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      border-color: #00ff88;
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      color: #00ff88;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .card p {
+      color: #999;
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      background: #222;
+      color: #00ff88;
+      border-radius: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-right: 0.6rem;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .section {
+      background: #111;
+      padding: 3rem;
+      border-radius: 0;
+      margin-bottom: 2rem;
+      border: 1px solid #222;
+    }
+
+    .section h2 {
+      color: #fff;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section p {
+      color: #999;
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .section ul {
+      margin-left: 2rem;
+      color: #999;
+      line-height: 2;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1.2rem;
+      border: 1px solid #333;
+      border-radius: 0;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.3s ease;
+      background: #000;
+      color: #fff;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #666;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #00ff88;
+      box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    .alert {
+      padding: 1.5rem;
+      border-radius: 0;
+      margin-bottom: 2rem;
+      border-left: 3px solid;
+      font-size: 0.95rem;
+    }
+
+    .alert-success {
+      background: rgba(0, 255, 136, 0.05);
+      border-left-color: #00ff88;
+      color: #00ff88;
+    }
+
+    .alert-error {
+      background: rgba(255, 0, 100, 0.05);
+      border-left-color: #ff0064;
+      color: #ff6b9d;
+    }
+
+    .alert-info {
+      background: rgba(0, 212, 255, 0.05);
+      border-left-color: #00d4ff;
+      color: #00d4ff;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #666;
+    }
+
+    .spinner {
+      border: 2px solid #333;
+      border-top: 2px solid #00ff88;
+      border-radius: 0;
+      width: 40px;
+      height: 40px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      background: #000;
+      color: #666;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 4rem;
+      border-top: 1px solid #222;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #00ff88;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #00d4ff;
+    }
+
+    .detail-header {
+      background: #111;
+      padding: 3rem;
+      border-radius: 0;
+      margin-bottom: 2rem;
+      border-left: 3px solid #00ff88;
+      border: 1px solid #222;
+      border-left: 3px solid #00ff88;
+    }
+
+    .detail-header h1 {
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 3rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .back-button {
+      margin-bottom: 2rem;
+    }
+
+    .back-button a {
+      color: #00ff88;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .back-button a:hover {
+      color: #00d4ff;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #666;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 3rem 0 1.5rem 0;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Instrument Serif', serif;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+
+      .hero {
+        padding: 4rem 0 2rem 0;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+
+      .filters input,
+      .filters select {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 2rem;
+      }
+
+      .container {
+        padding: 0 1.5rem;
+      }
+
+      .feature-card {
+        padding: 0;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+
+      .features-grid {
+        gap: 2rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">PEPFOUND</div>
+      <ul class="nav-links">
+        <li><a onclick="showPage('home')" class="nav-link active" data-page="home">Home</a></li>
+        <li><a onclick="showPage('guides')" class="nav-link" data-page="guides">Library</a></li>
+        <li><a onclick="showPage('about')" class="nav-link" data-page="about">About</a></li>
+        <li><a onclick="showPage('safety')" class="nav-link" data-page="safety">Safety</a></li>
+        <li><a onclick="showPage('ask')" class="nav-link" data-page="ask">Ask</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div id="home" class="page active">
+      <div class="hero">
+        <h1>Peptide Research<br>Simplified</h1>
+        <p class="hero-subtitle">Independent, medically-reviewed information about peptides. No bias. Just science.</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="showPage('guides')">Explore Library</button>
+          <button class="btn btn-secondary" onclick="showPage('ask')">Ask a Question</button>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔬</div>
+          <h3>Medically Reviewed</h3>
+          <p>Every guide reviewed by qualified medical professionals for accuracy and safety.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Research-Based</h3>
+          <p>Backed by peer-reviewed studies and the latest scientific evidence.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🆓</div>
+          <h3>Completely Free</h3>
+          <p>No paywall. No corporate bias. Just knowledge, accessible to everyone.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="guides" class="page">
+      <h1>Peptide Library</h1>
+      
+      <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search peptides..." onkeyup="filterPeptides()">
+        <select id="categoryFilter" onchange="filterPeptides()">
+          <option value="">All Categories</option>
+        </select>
+        <select id="statusFilter" onchange="filterPeptides()">
+          <option value="">All FDA Statuses</option>
+        </select>
+      </div>
+
+      <div id="peptidesList" class="grid">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading peptides...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="peptideDetail" class="page">
+      <div class="back-button">
+        <a onclick="showPage('guides')">← Back</a>
+      </div>
+      <div id="peptideContent"></div>
+    </div>
+
+    <div id="about" class="page">
+      <h1>About Pepfound</h1>
+      
+      <div class="section">
+        <h2>Our Mission</h2>
+        <p>Pepfound exists to provide accurate, independent, and medically-reviewed information about peptides. We believe scientific knowledge should be accessible to everyone, free from corporate bias and marketing hype.</p>
+      </div>
+
+      <div class="section">
+        <h2>Who Reviews Content</h2>
+        <p>All peptide guides are reviewed by medical professionals with expertise in peptide science, endocrinology, and clinical research. Our reviewers ensure information is accurate, evidence-based, and presented fairly.</p>
+      </div>
+
+      <div class="section">
+        <h2>How We Source</h2>
+        <p>Our guides are built on peer-reviewed clinical studies, published research, and expert consensus. Every claim is supported by scientific evidence. We transparently cite our sources.</p>
+      </div>
+
+      <div class="section">
+        <h2>Our Values</h2>
+        <ul>
+          <li><strong>Independence</strong> — No financial ties to manufacturers.</li>
+          <li><strong>Accuracy</strong> — Scientific integrity, always first.</li>
+          <li><strong>Transparency</strong> — We disclose sources and methodology openly.</li>
+          <li><strong>Education</strong> — We empower informed decision-making.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="safety" class="page">
+      <h1>Safety & Disclaimers</h1>
+      
+      <div class="alert alert-info">
+        <strong>Important:</strong> This information is educational only. It does not replace professional medical advice.
+      </div>
+
+      <div class="section">
+        <h2>Before Using Any Peptide</h2>
+        <ul>
+          <li>Consult a qualified healthcare provider</li>
+          <li>Discuss potential risks specific to your health</li>
+          <li>Peptides are not regulated like pharmaceuticals in most countries</li>
+          <li>Be aware of quality and purity concerns with non-pharmaceutical sources</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Regulatory Status</h2>
+        <p>The regulatory status of peptides varies by country. In the US, most research peptides are not FDA-approved for human use and may only be sold as research chemicals. Always verify the legal status in your region.</p>
+      </div>
+
+      <div class="section">
+        <h2>Medical Disclaimer</h2>
+        <p>Pepfound and its contributors are not medical doctors and do not provide medical advice. The information provided is for educational purposes only. Nothing on this site should be construed as a recommendation or substitute for professional medical consultation.</p>
+        <p><strong>Users assume full responsibility for their decisions regarding peptide use.</strong></p>
+      </div>
+    </div>
+
+    <div id="ask" class="page">
+      <h1>Submit a Question</h1>
+      <p style="margin-bottom: 2rem; color: #999; font-size: 1.05rem;">Have a question about peptides? Submit it below. Our medical reviewers will respond within 24-48 hours.</p>
+
+      <div id="questionAlert" style="display: none;" class="alert alert-success">
+        ✓ Question submitted. We'll review and respond shortly.
+      </div>
+
+      <div id="errorAlert" style="display: none;" class="alert alert-error">
+        ✗ Error submitting your question. Please try again.
+      </div>
+
+      <div class="section" style="max-width: 600px;">
+        <form id="questionForm" onsubmit="submitQuestion(event)">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email (optional)</label>
+            <input type="email" id="email">
+          </div>
+
+          <div class="form-group">
+            <label for="question">Question</label>
+            <textarea id="question" required placeholder="Type your question..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;" id="submitBtn">Submit</button>
+        </form>
+      </div>
+
+      <div class="alert alert-info" style="max-width: 600px; margin-top: 2rem;">
+        <strong>Note:</strong> Questions are reviewed by our medical team. We prioritize questions of general interest. For personal medical advice, consult your healthcare provider.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Pepfound. Independent peptide knowledge base.</p>
+    <p style="margin-top: 1rem;">See <a onclick="showPage('safety')">Safety & Medical Disclaimer</a> for important information.</p>
+  </footer>
+
+  <script>
+    var SUPABASE_URL = 'https://xqiwwdruswarfmjvonvh.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhxaXd3ZHJ1c3dhcmZtanZvbnZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMDc4OTQsImV4cCI6MjA5ODY4Mzg5NH0.hcsxB7oVkIl6q5ykxPUhRpvykc_7eWqDzhirjwgaObI';
+
+    var allPeptides = [];
+
+    function fetchPeptides() {
+      var url = SUPABASE_URL + '/rest/v1/peptides?order=name.asc';
+      return fetch(url, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response) {
+        if (!response.ok) throw new Error('API error');
+        return response.json();
+      });
+    }
+
+    function submitQuestionToDatabase(name, email, question) {
+      var url = SUPABASE_URL + '/rest/v1/questions';
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name: name, email: email || null, question: question})
+      })
+      .then(function(response) {
+        if (!response.ok) throw new Error('API error');
+        return response.json();
+      });
+    }
+
+    function showPage(pageName) {
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+      var links = document.querySelectorAll('.nav-link');
+      for (var i = 0; i < links.length; i++) links[i].classList.remove('active');
+      document.getElementById(pageName).classList.add('active');
+      var link = document.querySelector('[data-page="' + pageName + '"]');
+      if (link) link.classList.add('active');
+      window.scrollTo(0, 0);
+      if (pageName === 'guides') loadPeptides();
+    }
+
+    function loadPeptides() {
+      var container = document.getElementById('peptidesList');
+      fetchPeptides()
+        .then(function(data) {
+          allPeptides = data || [];
+          renderPeptides(allPeptides);
+          populateFilters();
+        })
+        .catch(function(error) {
+          container.innerHTML = '<div class="empty"><p>Error loading peptides.</p></div>';
+        });
+    }
+
+    function renderPeptides(peptides) {
+      var container = document.getElementById('peptidesList');
+      if (!peptides || peptides.length === 0) {
+        container.innerHTML = '<div class="empty"><p>No peptides found.</p></div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < peptides.length; i++) {
+        var p = peptides[i];
+        html += '<div class="card" onclick="showPeptideDetail(\'' + p.id + '\', \'' + p.name.replace(/'/g, "\\'") + '\')">';
+        html += '<h3>' + p.name + '</h3>';
+        html += '<p>' + (p.short_description || '') + '</p>';
+        html += '<div>' + (p.category ? '<span class="tag">' + p.category + '</span>' : '') + (p.fda_status ? '<span class="tag">' + p.fda_status + '</span>' : '') + '</div></div>';
+      }
+      container.innerHTML = html;
+    }
+
+    function filterPeptides() {
+      var search = document.getElementById('searchInput').value.toLowerCase();
+      var category = document.getElementById('categoryFilter').value;
+      var status = document.getElementById('statusFilter').value;
+      var filtered = [];
+      for (var i = 0; i < allPeptides.length; i++) {
+        var p = allPeptides[i];
+        var matchSearch = p.name.toLowerCase().indexOf(search) >= 0 || (p.short_description || '').toLowerCase().indexOf(search) >= 0;
+        var matchCat = !category || p.category === category;
+        var matchStatus = !status || p.fda_status === status;
+        if (matchSearch && matchCat && matchStatus) filtered.push(p);
+      }
+      renderPeptides(filtered);
+    }
+
+    function populateFilters() {
+      var categories = [], statuses = [];
+      for (var i = 0; i < allPeptides.length; i++) {
+        if (allPeptides[i].category && categories.indexOf(allPeptides[i].category) < 0) categories.push(allPeptides[i].category);
+        if (allPeptides[i].fda_status && statuses.indexOf(allPeptides[i].fda_status) < 0) statuses.push(allPeptides[i].fda_status);
+      }
+      var catSelect = document.getElementById('categoryFilter');
+      var statSelect = document.getElementById('statusFilter');
+      for (var i = 0; i < categories.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = categories[i];
+        opt.textContent = categories[i];
+        catSelect.appendChild(opt);
+      }
+      for (var i = 0; i < statuses.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = statuses[i];
+        opt.textContent = statuses[i];
+        statSelect.appendChild(opt);
+      }
+    }
+
+    function showPeptideDetail(id, name) {
+      var peptide = null;
+      for (var i = 0; i < allPeptides.length; i++) {
+        if (allPeptides[i].id === id) {
+          peptide = allPeptides[i];
+          break;
+        }
+      }
+      if (!peptide) return;
+      var content = document.getElementById('peptideContent');
+      var html = '<div class="detail-header"><h1>' + peptide.name + '</h1><p>' + (peptide.short_description || '') + '</p><div>' + (peptide.category ? '<span class="tag">' + peptide.category + '</span>' : '') + (peptide.fda_status ? '<span class="tag">' + peptide.fda_status + '</span>' : '') + '</div></div>';
+      if (peptide.description) html += '<div class="section"><h2>Overview</h2><p>' + peptide.description + '</p></div>';
+      if (peptide.mechanism) html += '<div class="section"><h2>Mechanism</h2><p>' + peptide.mechanism + '</p></div>';
+      if (peptide.clinical_applications) html += '<div class="section"><h2>Applications</h2><p>' + peptide.clinical_applications + '</p></div>';
+      if (peptide.safety_profile) html += '<div class="section"><h2>Safety</h2><p>' + peptide.safety_profile + '</p></div>';
+      if (peptide.references) html += '<div class="section"><h2>References</h2><p style="white-space: pre-wrap; font-size: 0.9rem;">' + peptide.references + '</p></div>';
+      html += '<div class="alert alert-info"><strong>Reminder:</strong> Educational purposes only.</div>';
+      content.innerHTML = html;
+      showPage('peptideDetail');
+    }
+
+    function submitQuestion(event) {
+      event.preventDefault();
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+      var question = document.getElementById('question').value;
+      var submitBtn = document.getElementById('submitBtn');
+      var errorAlert = document.getElementById('errorAlert');
+      var successAlert = document.getElementById('questionAlert');
+      errorAlert.style.display = 'none';
+      successAlert.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      submitQuestionToDatabase(name, email, question)
+        .then(function(response) {
+          successAlert.style.display = 'block';
+          document.getElementById('questionForm').reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit';
+          setTimeout(function() { successAlert.style.display = 'none'; }, 5000);
+        })
+        .catch(function(error) {
+          errorAlert.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit';
+        });
+    }
+  </script>
+</body>
+</html>
